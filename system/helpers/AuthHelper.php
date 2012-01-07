@@ -59,7 +59,6 @@
             $dao = new DAO();
             $sql = "SELECT * FROM $this->tableName WHERE $this->userColumn='$this->user' AND $this->passColumn='$this->pass' LIMIT 1";
             $result = mysql_query($sql, $dao->connection);
-            echo mysql_error();
             if(mysql_fetch_assoc($result)){
                 $this->sessionHelper->createSession("userAuth", true)
                                     ->createSession("userData", mysql_fetch_row($result));

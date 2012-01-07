@@ -25,7 +25,7 @@
         else if(file_exists(SYSTEM.$file.'.php'))
             require_once(SYSTEM.$file.'.php');
         else
-            die('Injection não pode ser realizada, n&atilde;o encontrado arquivo com a refer&ecirc;ncia: '.$file);
+            die('Injection could not be done. File not found: '.$file);
     }
     
     $start = new System();

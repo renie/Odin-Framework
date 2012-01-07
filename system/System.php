@@ -1,53 +1,136 @@
 <?php
-
+    /**
+     * Core class
+     * 
+     * At this moment this class just controls the controllers access and
+     * friendly url.
+     * 
+     * @package System
+     * @author Renie Siqueira da Silva
+     * @copyright Copyright (C) <2012>  <Renie Siqueira da Silva>
+     * @license http://www.gnu.org/licenses/gpl-3.0.html
+     * @version 1.0
+     * @since 1.0
+     */
     class System{
         
+        /**
+         * Stores full URL
+         * @access private
+         * @var String 
+         */        
         private $_url;
+
+        /**
+         * Stores a broken URL
+         * @access private
+         * @var String 
+         */        
         private $_explode;
+        
+        /**
+         * Stores controller name
+         * @access public
+         * @var String 
+         */
         public $_controller;
+        
+        /**
+         * Stores action name
+         * @access public
+         * @var String 
+         */
         public $_action;
+        
+        /**
+         * Stores all params
+         * @access public
+         * @var String 
+         */
         public $_params;
         
-    
+        /**
+         * Calls methods that boot all variables
+         * 
+         * @access public
+         * @author Renie Siqueira da Silva
+         * @version 1.0
+         * @since 1.0
+         * @return new System object
+         */
         public function __construct(){
             $this->setUrl();
             $this->setExplode();
-            if($this->setController()){
-                if($this->setAction()){
-                    $this->setParams();
-                }else{
-                    $this->dispatch404();
-                }
-            }
-            else{
-                $this->dispatch404();
-            }
+            $this->setController();
+            $this->setAction();
+            $this->setParams();
         }
         
+        /**
+         * Sets up url
+         * 
+         * @access private
+         * @author Renie Siqueira da Silva
+         * @version 1.0
+         * @since 1.0
+         * @return void
+         */
         private function setUrl(){
             $_GET['key'] = (isset($_GET['key'])?$_GET['key']:"Index/indexAction");
             $this->_url = $_GET['key'];
-            
         }
         
+        /**
+         * Sets up explode variable
+         * 
+         * @access private
+         * @author Renie Siqueira da Silva
+         * @version 1.0
+         * @since 1.0
+         * @return void
+         */
         private function setExplode(){
             $this->_explode = explode("/", $this->_url);
-            return true;
         }
         
+        /**
+         * Sets up controller variable
+         * 
+         * @access private
+         * @author Renie Siqueira da Silva
+         * @version 1.0
+         * @since 1.0
+         * @return void
+         */
         private function setController(){
             $this->_controller = $this->_explode[0];
-            return true;
         }
         
+        /**
+         * Sets up actions variable
+         * 
+         * @access private
+         * @author Renie Siqueira da Silva
+         * @version 1.0
+         * @since 1.0
+         * @return void
+         */
         private function setAction(){
             if(!isset($this->_explode[1]) || $this->_explode[1]==null)
                 $this->_explode[1] = 'indexAction';
                 
             $this->_action = $this->_explode[1];
-            return true;
         }
         
+        /**
+         * Sets up params variable
+         * 
+         * @access private
+         * @author Renie Siqueira da Silva
+         * @version 1.0
+         * @since 1.0
+         * @return void
+         */
         private function setParams(){
             unset($this->_explode[0], $this->_explode[1]);
 
@@ -74,9 +157,21 @@
                 $this->_params = array_combine($indexes, $values);
             else
                 $this->_params = array();
-
         }
         
+        /**
+         * Gets params variable
+         * 
+         * If parameter name has been passed it returns this specif param,
+         * else it returns all parameters in an assoc array
+         * 
+         * @access public
+         * @author Renie Siqueira da Silva
+         * @param String $name
+         * @version 1.0
+         * @since 1.0
+         * @return String or Array
+         */
         public function getParam($name = null){
             if($name != null)
                 return $this->_params[$name];
@@ -84,6 +179,15 @@
                 return $this->_params;
         }
         
+        /**
+         * Loads the requested URL
+         * 
+         * @access public
+         * @author Renie Siqueira da Silva
+         * @version 1.0
+         * @since 1.0
+         * @return void
+         */
         public function run(){
             $controller_path = CONTROLLERS.$this->_controller."Controller.php";
             
@@ -109,31 +213,47 @@
             }
         }
         
+        /**
+         * Calls controller for page not found(404 error)
+         * 
+         * @access public
+         * @author Renie Siqueira da Silva
+         * @version 1.0
+         * @since 1.0
+         * @return void
+         */
         public function dispatch404(){
             $redirect = new RedirectHelper();
             $redirect->goToController("pagina_nao_encontrada");
             
         }
         
+        /**
+         * Gets controller's name in lower case
+         * 
+         * @access public
+         * @author Renie Siqueira da Silva
+         * @version 1.0
+         * @since 1.0
+         * @return String
+         */
         public static function getPureController(){
             global $start;
             return strtolower($start->_controller);
-         }
+        }
         
+        /**
+         * Gets action's name in lower case
+         * 
+         * @access public
+         * @author Renie Siqueira da Silva
+         * @version 1.0
+         * @since 1.0
+         * @return String
+         */
         public static function getPureAction(){
            global $start;
            return strtolower($start->_action);
         }
         
-        public static function getController(){
-            global $start;
-            $a = array_keys($start->controllers, $start->_controller);
-            return strtolower($a[0]);   
-        }
-        
-        public static function getAction(){
-            global $start;
-            $a = array_keys($start->actions, $start->_action);
-            return strtolower($a[0]);
-        }
     }
