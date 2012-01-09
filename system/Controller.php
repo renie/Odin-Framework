@@ -35,8 +35,6 @@
             
             $pure_controller    = SYSTEM::getPureController();
             $pure_action        = SYSTEM::getPureAction();
-            $controller         = strtoupper(SYSTEM::getController());
-            $action             = strtoupper(SYSTEM::getAction());
             
             return require_once('app/views/'.$viewName.'.phtml');
         }
