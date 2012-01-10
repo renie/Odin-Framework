@@ -117,7 +117,7 @@
          */
         private function setAction(){
             if(!isset($this->_explode[1]) || $this->_explode[1]==null)
-                $this->_explode[1] = 'indexAction';
+                $this->_explode[1] = 'index';
                 
             $this->_action = $this->_explode[1].'Action';
         }
