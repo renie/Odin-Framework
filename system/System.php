@@ -9,7 +9,6 @@
      * @author Renie Siqueira da Silva
      * @copyright Copyright (C) <2012>  <Renie Siqueira da Silva>
      * @license http://www.gnu.org/licenses/gpl-3.0.html
-     * @version 1.0.1
      * @since 1.0
      */
     class System{
@@ -54,11 +53,11 @@
          * 
          * @access public
          * @author Renie Siqueira da Silva
-         * @version 1.0
          * @since 1.0
          * @return new System object
          */
         public function __construct(){
+
             $this->setUrl();
             $this->setExplode();
             $this->setController();
@@ -71,12 +70,11 @@
          * 
          * @access private
          * @author Renie Siqueira da Silva
-         * @version 1.0
          * @since 1.0
          * @return void
          */
         private function setUrl(){
-            $_GET['key'] = (isset($_GET['key'])?$_GET['key']:"Index/indexAction");
+            $_GET['key'] = (isset($_GET['key'])?$_GET['key']:"Index/index");
             $this->_url = $_GET['key'];
         }
         
@@ -85,7 +83,6 @@
          * 
          * @access private
          * @author Renie Siqueira da Silva
-         * @version 1.0
          * @since 1.0
          * @return void
          */
@@ -98,7 +95,6 @@
          * 
          * @access private
          * @author Renie Siqueira da Silva
-         * @version 1.0
          * @since 1.0
          * @return void
          */
@@ -111,14 +107,13 @@
          * 
          * @access private
          * @author Renie Siqueira da Silva
-         * @version 1.0.1
          * @since 1.0
          * @return void
          */
         private function setAction(){
             if(!isset($this->_explode[1]) || $this->_explode[1]==null)
                 $this->_explode[1] = 'index';
-                
+            
             $this->_action = $this->_explode[1].'Action';
         }
         
@@ -127,7 +122,6 @@
          * 
          * @access private
          * @author Renie Siqueira da Silva
-         * @version 1.0
          * @since 1.0
          * @return void
          */
@@ -137,7 +131,8 @@
             if(end($this->_explode)== null)
                 array_pop($this->_explode);
 
-            if(!empty ($this->_explode)){
+            if(!empty ($this->_explode)){echo "6";
+            exit;
                 $parity = 0;
                 foreach( $this->_explode as $val ){
                     if($parity % 2 == 0)
@@ -168,7 +163,6 @@
          * @access public
          * @author Renie Siqueira da Silva
          * @param String $name
-         * @version 1.0
          * @since 1.0
          * @return String or Array
          */
@@ -184,7 +178,6 @@
          * 
          * @access public
          * @author Renie Siqueira da Silva
-         * @version 1.0
          * @since 1.0
          * @return void
          */
@@ -218,7 +211,6 @@
          * 
          * @access public
          * @author Renie Siqueira da Silva
-         * @version 1.0.1
          * @since 1.0
          * @return void
          */
@@ -233,7 +225,6 @@
          * 
          * @access public
          * @author Renie Siqueira da Silva
-         * @version 1.0
          * @since 1.0
          * @return String
          */
@@ -247,7 +238,6 @@
          * 
          * @access public
          * @author Renie Siqueira da Silva
-         * @version 1.0
          * @since 1.0
          * @return String
          */
