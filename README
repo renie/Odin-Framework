@@ -16,6 +16,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 /*--------------------------------------------------------------------*/
 
+Notes: 
+    - PHPDoc and PHPUnit were set aside for the time being, BUT THEY ARE NOT DEAD!
+
 Notices:
 
     - For the time being, Odin manager of controllers and Actions id based on
