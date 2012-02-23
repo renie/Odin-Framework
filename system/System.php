@@ -57,7 +57,7 @@
          * @return new System object
          */
         public function __construct(){
-
+            
             $this->setUrl();
             $this->setExplode();
             $this->setController();
@@ -74,8 +74,10 @@
          * @return void
          */
         private function setUrl(){
-            $_GET['key'] = (isset($_GET['key'])?$_GET['key']:"Index/index");
+            
+            $_GET['key'] = (isset($_GET['key'])?$_GET['key']:DEFAULTCONTROLLER."/".DEFAULTACTION);
             $this->_url = $_GET['key'];
+            
         }
         
         /**
@@ -112,9 +114,9 @@
          */
         private function setAction(){
             if(!isset($this->_explode[1]) || $this->_explode[1]==null)
-                $this->_explode[1] = 'index';
+                $this->_explode[1] = DEFAULTACTION;
             
-            $this->_action = $this->_explode[1].'Action';
+            $this->_action = $this->_explode[1];
         }
         
         /**
@@ -131,8 +133,7 @@
             if(end($this->_explode)== null)
                 array_pop($this->_explode);
 
-            if(!empty ($this->_explode)){echo "6";
-            exit;
+            if(!empty ($this->_explode)){
                 $parity = 0;
                 foreach( $this->_explode as $val ){
                     if($parity % 2 == 0)
@@ -187,14 +188,13 @@
             if(!file_exists($controller_path)){
                 $this->dispatch404();
             }
-                
+
             require_once($controller_path);
             $controller = $this->_controller."Controller";
             $app = new $controller();
             
             if(!method_exists($app, $this->_action))
                 $this->dispatch404();
-            
             
             $action = $this->_action;
             
@@ -216,7 +216,7 @@
          */
         public function dispatch404(){
             $redirect = new RedirectHelper();
-            $redirect->goToController("Error404");
+            $redirect->goToController(DEFAULT404ERRORCONTROLLER);
             
         }
         

@@ -4,7 +4,11 @@
     <head profile="http://gmpg.org/xfn/11">
 
             <!-- TITULO -->
-            <title><?php echo SYSTEMNAME." - ";echo ($pure_controller=='index')?'HOME':$controller;echo ($pure_action=='indexaction')?'':" :: ".$action ?></title>
+            <title>
+                    <?php   echo SYSTEMNAME." - ";
+                            echo $controller;
+                            echo $action ?>
+            </title>
             <!-- /TITULO -->
 
             <!-- METAS -->
@@ -17,7 +21,7 @@
             <!-- CSS -->
             <link media="screen" type="text/css" rel="stylesheet" href="<?php echo CSS ?>/general.css" />
             <link media="screen" type="text/css" rel="stylesheet" href="<?php echo CSS ?>/components.css" />
-            <link media="screen" type="text/css" rel="stylesheet" href="<?php echo CSS.'/'.strtolower($pure_controller)?>.css" />
+            <link media="screen" type="text/css" rel="stylesheet" href="<?php echo CSS.'/'.$controllerIdentification?>.css" />
             <!-- /CSS -->
 
             <!--  FAVICON -->

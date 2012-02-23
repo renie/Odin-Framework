@@ -13,10 +13,14 @@
      * @license http://www.gnu.org/licenses/gpl-3.0.html
      * @since 1.0
      */    
-    define('SYSTEMNAME', 'Odin framework');  
+    define('SYSTEMNAME', 'Odin framework');
+    define('DEFAULTCONTROLLER', 'Odin'); //'index' are not recommended
+    define('DEFAULTACTION', 'ini'); //'index' are not recommended
+    define('DEFAULT404ERRORCONTROLLER', 'Error404'); //'index' are not recommended
 
     define('SYSTEM', 'system/');    
-    define('HELPERS', 'system/helpers/');
+    define('HELPERS', 'system/Helpers/');
+    
     define('CONTROLLERS', 'app/controllers/');
     define('VIEWS', 'app/views/');
     define('MODELS', 'app/models/');

@@ -8,7 +8,7 @@
      * @license http://www.gnu.org/licenses/gpl-3.0.html
      * @since 1.0
      */
-    class Controller extends System{
+    class Controller{
         
         /**
          * Stores parameters
@@ -38,8 +38,24 @@
             if(count($this->vars)>0)
                 extract($this->vars, EXTR_PREFIX_ALL, 'view');
             
-            $pure_controller    = SYSTEM::getPureController();
-            $pure_action        = SYSTEM::getPureAction();
+            $controller    = SYSTEM::getPureController();
+            $controllerIdentification = $controller;
+            
+            if($controller == 'odin')
+                $controller = 'Home';
+            else if($controller == 'error404')
+                $controller = 'Page not found';
+            else
+                $controller = strtoupper(substr($controller, 0, 1).substr($controller, 1, -1));
+            
+            $action        = SYSTEM::getPureAction();
+            $actionIdentification = $action;
+            if($action == 'ini')
+                $action = '';
+            else 
+                $action = strtoupper(substr($action, 0, 1).substr($action, 1, -1));
+            
+            
             
             return require_once('app/views/'.$viewName.'.phtml');
         }
