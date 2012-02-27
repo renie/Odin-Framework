@@ -26,8 +26,59 @@
     define('MODELS', 'app/models/');
     define('DAO', 'app/dao/');
     
+    
+    
     $appName = explode("/",$_SERVER['PHP_SELF']);
+    /**
+     * System's url
+     */
     define('BASEURL', '/'.$appName[1].'/');
+    
+    /**
+     * Image's url
+     */
     define('IMG', '/'.$appName[1].'/assets/img');
+    
+    /**
+     * Stylesheets url
+     */
     define('CSS', '/'.$appName[1].'/assets/css');
+    
+    /**
+     * Javascript archives url
+     */
     define('JS', '/'.$appName[1].'/assets/js');
+    
+    
+    
+    
+    /**
+     * "Normal" date format
+     */
+    define('NORMALDATEFORMAT', 'd/m/Y');//php date format
+    
+    /**
+     * "Normal" time format
+     */
+    define('NORMALTIMEFORMAT', 'H\hi\ms\s');//php time format
+    
+    /**
+     * "Normal" datetime format
+     */
+    define('NORMALDATETIMEFORMAT', 'd/m/Y\ H\hi\ms\s');//php datetime format
+    
+    /**
+     * "Datebase" date format
+     */
+    define('DATABASEDATEFORMAT', 'Y-m-d');//php datetime format
+    
+    /**
+     * "Database" time format
+     */
+    define('DATABASETIMEFORMAT', 'H:i:s');//php datetime format
+    
+    /**
+     * "Database" datetime format
+     */
+    define('DATABASEDATETIMEFORMAT', 'Y-m-d H:i:s');//php datetime format
+ 

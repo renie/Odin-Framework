@@ -1,5 +1,15 @@
 <?php
-
+    /**
+     * 
+     * Helper for redirects 
+     * 
+     * 
+     * @package System
+     * @author Renie Siqueira da Silva
+     * @copyright Copyright (C) <2012>  <Renie Siqueira da Silva>
+     * @license http://www.gnu.org/licenses/gpl-3.0.html
+     * @since 1.0
+     */
     class RedirectHelper{
         
         protected $params = array();
@@ -47,6 +57,11 @@
             $this->goToController(DEFAULTCONTROLLER);
         }
         
+        /**
+        * Get an URL and redirect to this 
+        * @param string url
+        * @return void
+        */
         public static function goToUrl($url){
             if(!strstr($url, "http://") && !strstr($url, "https://"))
                 $url = "http://".$url;
