@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 Notes: 
     - PHPDoc and PHPUnit were set aside for the time being, BUT THEY ARE NOT DEAD!
+        - This does NOT mean you are able to not document ALL your fucking method AND classes.
 
 Notices:
 
