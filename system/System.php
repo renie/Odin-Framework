@@ -46,7 +46,7 @@
          * @access public
          * @var String 
          */
-        public $_params;
+        public static $PARAMS;
         
         /**
          * Calls methods that boot all variables
@@ -139,10 +139,21 @@
                     if($parity % 2 == 0)
                         $indexes[] = $val;
                     else
-                        $values[] = $val;
+                        $values[] = addslashes($val);
                     $parity++;
                 }
-            }else{
+            }else if($_POST){
+                foreach( $_POST as $k => $v ){
+                    $indexes[] = $k;
+                    $values[] = addslashes($v);
+                }
+            }else if($_FILES){
+                foreach( $_FILES as $k => $v ){
+                    $indexes[] = $k;
+                    $values[] = $v;
+                }
+            }
+            else{
                 $indexes = array();
                 $values  = array();
             }
@@ -150,30 +161,11 @@
             if((empty($indexes) && !empty($values))||(!empty($indexes) && empty($values)))
                 $this->dispatch404();
             else if(!empty($indexes) && !empty($values) && count($indexes) == count($values))
-                $this->_params = array_combine($indexes, $values);
+                System::$PARAMS = array_combine($indexes, $values);
             else
-                $this->_params = array();
+                System::$PARAMS = array();
         }
-        
-        /**
-         * Gets params variable
-         * 
-         * If parameter name has been passed it returns this specif param,
-         * else it returns all parameters in an assoc array
-         * 
-         * @access public
-         * @author Renie Siqueira da Silva
-         * @param String $name
-         * @since 1.0
-         * @return String or Array
-         */
-        public function getParam($name = null){
-            if($name != null)
-                return $this->_params[$name];
-            else
-                return $this->_params;
-        }
-        
+             
         /**
          * Loads the requested URL
          * 
@@ -199,7 +191,7 @@
             $action = $this->_action;
             
             try{
-            $app->$action();
+                $app->$action();
             }  catch (Exception $e)
             {
                 echo $e;
@@ -215,9 +207,7 @@
          * @return void
          */
         public function dispatch404(){
-            $redirect = new RedirectHelper();
-            $redirect->goToController(DEFAULT404ERRORCONTROLLER);
-            
+            RedirectHelper::goToController(DEFAULT404ERRORCONTROLLER);        
         }
         
         /**

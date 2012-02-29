@@ -1,6 +1,6 @@
 <?php
     session_start();
-
+    
     require_once('system/constants.php');
     require_once('system/System.php');
     require_once('system/Controller.php');
@@ -27,6 +27,6 @@
         else
             die('Injection could not be done. File not found: '.$file);
     }
-    
+
     $start = new System();
     $start->run();

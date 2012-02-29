@@ -51,6 +51,42 @@
     
     
     
+    /**
+     * Database server where AuthHelper should verify
+     */
+    define('AUTHDBSERVER', 'localhost');
+    
+    /**
+     * Database name where AuthHelper should verify
+     */
+    define('AUTHDBNAME', 'odin_auth_test');
+    
+    /**
+     * Database username to AuthHelper get access on database
+     */
+    define('AUTHDBUSER', 'odinAuth');
+    
+    /**
+     * Database password to AuthHelper get access  on database
+     */
+    define('AUTHDBPASS', 'oat');
+    
+    /**
+     * Database table where AuthHelper should verify
+     */
+    define('AUTHDBTABLE', 'auth_table');
+    
+    /**
+     * Database usercolumn on authdbtable where AuthHelper should verify
+     */
+    define('AUTHDBUSERCOLUMN', 'user');
+    
+    /**
+     * Database passwordcolumn on authdbtable where AuthHelper should verify
+     */
+    define('AUTHDBPASSCOLUMN', 'pass');
+    
+    
     
     /**
      * "Normal" date format

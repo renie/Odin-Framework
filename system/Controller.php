@@ -28,9 +28,6 @@
          * as $view_name and $_viewid.
          * This method will include the required phtml file.
          * 
-         * @access protected
-         * @author Renie Siqueira da Silva
-         * @since 1.0
          * @param String $viewName
          * @return void
          */
@@ -63,9 +60,6 @@
         /**
          * Receive parameters will be accessed on view.
          * 
-         * @access protected
-         * @author Renie Siqueira da Silva
-         * @since 1.0.1
          * @param String $viewName
          * @return void
          */
@@ -73,6 +67,7 @@
             $this->vars[$name] = $value;
             return $this;
         }
+        
         
     }
 

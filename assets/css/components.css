@@ -16,7 +16,12 @@
 
 /* Message Box */
 .msg { font-size: 1.5em; font-weight: bold; color: navy; margin: 10px; padding: 10px; border: 1px solid navy; box-shadow: 1px 1px 2px #999; }
+.sysmsg { font-size: 1.5em; font-weight: bold; color: navy; margin: 10px auto; padding: 10px; border: 1px solid red; box-shadow: 1px 1px 2px #999; width: 200px; text-align: center; }
 
 /* Tests Lists */
 .test li:nth-child(odd) { background: #dfdfdf; }
 .test li { margin: 15px 50px; display: block; border: 1px dotted #ccc; padding: 5px 10px; background: #fff; }
+
+/* Tests Forms */
+fieldset { width: 150px; margin: 0 auto; padding: 20px; }
+fieldset input { display: block; margin: 5px 0 20px; }

@@ -12,44 +12,44 @@
      */
     class RedirectHelper{
         
-        protected $params = array();
+        protected static $params = array();
         
-        protected function go($url){
+        protected static function go($url){
             $appName = explode("/",$_SERVER['PHP_SELF']);
             header("Location: /".$appName[1].'/'.$url);
         }
         
         public function setUrlParameter($name, $value){
-            $this->params[$name] = $value;
+            RedirectHelper::$params[$name] = $value;
             return $this;
         }
         
-        protected function getUrlParameters(){
+        protected static function getUrlParameters(){
             $params = "";
-            foreach ($this->params as $name => $value) {
+            foreach (RedirectHelper::$params as $name => $value) {
                 $params .= $name.'/'.$value.'/';
             }
             return $params;
         }
         
-        public function goToController($controller){
-            $this->go($controller);
+        public static function goToController($controller){
+            RedirectHelper::go($controller);
         }
         
         public function goToAction($action){
             if($action==DEFAULTACTION)
-                $this->go($this->getCurrentController());
+                RedirectHelper::go($this->getCurrentController());
             else
-                $this->go($this->getCurrentController().'/'.$action.'/'.$this->getUrlParameters());
+                RedirectHelper::go($this->getCurrentController().'/'.$action.'/'.RedirectHelper::getUrlParameters());
         }
         
-        public function goToControllerAction($controller, $action){
+        public static function goToControllerAction($controller, $action){
             if($action==DEFAULTACTION && $controller==DEFAULTCONTROLLER)
-                $this->go("");
-            else if($action=="DEFAULTACTION")
-                $this->go($controller);
+                RedirectHelper::go("");
+            else if($action==DEFAULTACTION)
+                RedirectHelper::go($controller);
             else
-                $this->go($controller.'/'.$action.'/'.$this->getUrlParameters());
+                RedirectHelper::go($controller.'/'.$action.'/'.RedirectHelper::getUrlParameters());
              
         }
 

@@ -1,0 +1,18 @@
+<?php include_once(VIEWS.'parts/header.phtml'); ?>
+    <body id="testAuthLoginpage">
+        <h1 class="msg roundCorner">Test Auth :: Login </h1>
+        <?php if(isset($view_msg)): ?>
+        <div class="sysmsg"><?php echo $view_msg ?></div>
+        <?php endif ?>
+        <form method="POST" action="<?php echo BASEURL?>TestAuthentication/getin">
+            <fieldset class="roundCorner">
+                <legend>Login Form</legend>
+                <label for="user">Username:</label>
+                <input type="text" id="user" name="user"/>
+                <label for="pass">Password:</label>
+                <input type="password" id="pass" name="pass"/>
+                <input type="submit" value="Go!"/>
+            </fieldset>
+        </form>
+    </body>
+</html>
