@@ -53,8 +53,8 @@
              
         }
 
-        public function goToIndex(){
-            $this->goToController(DEFAULTCONTROLLER);
+        public static function goToIndex(){
+            RedirectHelper::goToController(DEFAULTCONTROLLER);
         }
         
         /**

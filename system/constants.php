@@ -52,6 +52,11 @@
     
     
     /**
+     * Enable Helper for Authentication
+     */
+    define('AUTHENABLE', true);
+    
+    /**
      * Database server where AuthHelper should verify
      */
     define('AUTHDBSERVER', 'localhost');
@@ -85,6 +90,34 @@
      * Database passwordcolumn on authdbtable where AuthHelper should verify
      */
     define('AUTHDBPASSCOLUMN', 'pass');
+    
+    /**
+     * Controller where user will be redirect if try to access a protected page.
+     * If It's not settef, default will be DEFAULTCONTROLLER
+     */
+    define('AUTHCONTROLLERERROR', 'TestAuthentication');
+    
+    /**
+     * Action, of above Controller, where user will be redirect if try to 
+     * access a protected page.
+     * If It's not settef, default will be DEFAULTACTION
+     */
+    define('AUTHACTIONERROR', 'ini');
+    
+    
+    /**
+     * Controller where user will be redirect if try to access a protected page.
+     * NO DEFAULT, IF IT'S NOT SETTED APOCALYPSE WILL START
+     */
+    define('AUTHCONTROLLERHOME', 'TestAuthentication');
+    
+    /**
+     * Action, of above Controller, where user will be redirect if try to 
+     * access a protected page.
+     * NO DEFAULT AND CANNOT SAME OF AUTHACTIONERROR!
+     * IF IT'S NOT SETTED APOCALYPSE WILL START
+     */
+    define('AUTHACTIONHOME', 'restrictedByAnnotation');
     
     
     

@@ -189,7 +189,55 @@
                 $this->dispatch404();
             
             $action = $this->_action;
-            
+
+            if(defined('AUTHENABLE') && AUTHENABLE){
+
+                $refM = new ReflectionMethod($controller, $action);
+                $refC = new ReflectionClass($controller);
+
+                $authMNeeded = array();
+                preg_match("/@OdinAuth /", $refM->getDocComment(), $authMNeeded);
+                
+                $authCNeeded = array();
+                preg_match("/@OdinAuth /", $refC->getDocComment(), $authCNeeded);
+
+                $authLogin = array();
+                preg_match("/@OdinAuthLogin /", $refM->getDocComment(), $authLogin);
+                
+                if(isset($authMNeeded[0]) || isset($authCNeeded[0])){
+                    if(!AuthHelper::checkLogin()){
+                        if(defined('AUTHCONTROLLERERROR') && AUTHCONTROLLERERROR != ""){
+                            SessionHelper::setSystemSession('requiredController', $this->_controller);
+                            SessionHelper::setSystemSession('requiredAction', $this->_action);
+                            SessionHelper::setSystemSession('requiredURL', true);
+                            if(defined('AUTHCONTROLLERACTION') && AUTHCONTROLLERACTION != ""){
+                                RedirectHelper::goToControllerAction(AUTHCONTROLLERERROR, AUTHACTIONERROR);
+                            }else{
+                                RedirectHelper::goToController(AUTHCONTROLLERERROR);
+                            }
+                        }else{
+                            RedirectHelper::goToIndex();
+                        }
+                    }
+                }elseif(isset($authLogin[0])){
+                    
+                    if(AuthHelper::checkLogin()){
+                        if(defined('AUTHCONTROLLERHOME') && AUTHCONTROLLERHOME != ""){
+                            if((defined('AUTHACTIONHOME') && AUTHACTIONHOME != "") && ((AUTHCONTROLLERHOME != AUTHCONTROLLERERROR && AUTHACTIONHOME != AUTHACTIONERROR)||(AUTHACTIONHOME != AUTHACTIONERROR)||(AUTHCONTROLLERHOME != AUTHCONTROLLERERROR))){
+                                RedirectHelper::goToControllerAction(AUTHCONTROLLERHOME, AUTHACTIONHOME);
+                                exit;
+                            }else{
+                                RedirectHelper::goToUrl("odinphp.com/Fury");
+                                exit;
+                            }
+                        }else{
+                            RedirectHelper::goToUrl("odinphp.com/Fury");
+                            exit;
+                        }
+                    }
+                    
+                }
+            }
             try{
                 $app->$action();
             }  catch (Exception $e)
