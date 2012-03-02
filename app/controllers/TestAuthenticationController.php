@@ -28,7 +28,7 @@
                 }
             }else{
                 SessionHelper::setSystemSession('msg', 'Login error.');
-                RedirectHelper::goToController(AUTHACTIONERROR);
+                RedirectHelper::goToController(AUTHCONTROLLERERROR);
             }                    
         }
         /**

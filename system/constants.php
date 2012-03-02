@@ -93,14 +93,14 @@
     
     /**
      * Controller where user will be redirect if try to access a protected page.
-     * If It's not settef, default will be DEFAULTCONTROLLER
+     * If It's not setted, default will be DEFAULTCONTROLLER
      */
     define('AUTHCONTROLLERERROR', 'TestAuthentication');
     
     /**
      * Action, of above Controller, where user will be redirect if try to 
      * access a protected page.
-     * If It's not settef, default will be DEFAULTACTION
+     * If It's not setted, default will be DEFAULTACTION
      */
     define('AUTHACTIONERROR', 'ini');
     
