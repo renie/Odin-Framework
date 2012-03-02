@@ -27,27 +27,35 @@
     define('DAO', 'app/dao/');
     
     
+    /* DEVELOPMENT ENVIROMENT
+     */ 
+    $arr = explode('/',$_SERVER['PHP_SELF']);
+    $appName = "/".$arr[1];
+     
     
-    $appName = explode("/",$_SERVER['PHP_SELF']);
+    /* PRODUCTION ENVIROMENT
+     * $appName = "/";
+     */
+     
     /**
      * System's url
      */
-    define('BASEURL', '/'.$appName[1].'/');
+    define('BASEURL', $appName);
     
     /**
      * Image's url
      */
-    define('IMG', '/'.$appName[1].'/assets/img');
+    define('IMG', $appName.'/assets/img');
     
     /**
      * Stylesheets url
      */
-    define('CSS', '/'.$appName[1].'/assets/css');
+    define('CSS', $appName.'/assets/css');
     
     /**
      * Javascript archives url
      */
-    define('JS', '/'.$appName[1].'/assets/js');
+    define('JS', $appName.'/assets/js');
     
     
     
