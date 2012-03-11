@@ -1,0 +1,15 @@
+<?php include_once(VIEWS.'parts/header.phtml'); ?>
+    <body id="testDaoInsertpage">
+        <h1 class="msg roundCorner">Test Dao Insert</h1>
+        <form method="POST" action="<?php echo BASEURL?>/TestDao/put">
+            <fieldset class="roundCorner">
+                <legend>Insert Form</legend>
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name"/>
+                <label for="xpto">Xpto:</label>
+                <input type="text" id="xpto" name="xpto"/>
+                <input type="submit" value="Go!"/>
+            </fieldset>
+        </form>
+    </body>
+</html>

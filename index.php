@@ -4,7 +4,6 @@
     require_once('system/constants.php');
     require_once('system/System.php');
     require_once('system/Controller.php');
-    require_once('system/DBDATA.php');
     require_once('system/DAO.php');
     
    

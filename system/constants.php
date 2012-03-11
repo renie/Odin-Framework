@@ -130,6 +130,28 @@
     
     
     /**
+     * App's database server
+     */
+    define('APPDBSERVER', 'localhost');
+    
+    /**
+     * App's database name
+     */
+    define('APPDBNAME', 'odin_auth_test');
+    
+    /**
+     * App's database username
+     */
+    define('APPDBUSER', 'root');
+    
+    /**
+     * App's database password
+     */
+    define('APPDBPASS', 'root');
+    
+    
+    
+    /**
      * "Normal" date format
      */
     define('NORMALDATEFORMAT', 'd/m/Y');//php date format
