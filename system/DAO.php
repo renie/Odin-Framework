@@ -99,7 +99,7 @@ abstract class DAO{
 
     }
     
-    public function update($condition){
+    public function update($condition=null){
         $this->startReflection();
         $this->sql  = "UPDATE ".$this->table." SET ";
         $values = array();
@@ -122,7 +122,11 @@ abstract class DAO{
                     die("Unknown data type for value ".$propertyVal." !!");
             }
         }
-        $this->sql .= " WHERE ".$condition." ;";
+        if(!is_null($condition))
+            $this->sql .= " WHERE ".$condition." ;";
+        else
+            $this->sql .= " WHERE id=".$this->getId()." ;";
+        
         return $this->execQuery();
     }
     
@@ -159,7 +163,9 @@ abstract class DAO{
         if(!is_null($order))
             $this->sql .= "ORDER BY ".$order." ".$dir;
         $this->sql .= ";";
-            
+        
+        
+        
         return $this->execQuery();
     }
     
