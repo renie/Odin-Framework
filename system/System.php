@@ -142,20 +142,18 @@
                         $values[] = addslashes($val);
                     $parity++;
                 }
-            }else if($_POST){
+            }
+            if($_POST){
                 foreach( $_POST as $k => $v ){
                     $indexes[] = $k;
                     $values[] = addslashes($v);
                 }
-            }else if($_FILES){
+            }
+            if($_FILES){
                 foreach( $_FILES as $k => $v ){
                     $indexes[] = $k;
                     $values[] = $v;
                 }
-            }
-            else{
-                $indexes = array();
-                $values  = array();
             }
                 
             if((empty($indexes) && !empty($values))||(!empty($indexes) && empty($values)))
