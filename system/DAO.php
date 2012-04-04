@@ -7,7 +7,9 @@ abstract class DAO{
     private $class;
     private $properties;
     private $table;
+    private $pk;
     private $columns;
+    private $fieldsMap;
     private $sql;
 
     protected function closeConnection(){
@@ -32,25 +34,26 @@ abstract class DAO{
         else
             $this->table  = strtolower($this->class);
         
+        $this->getTableRows();
         
         //set columns
         $cont = 0;
-        foreach($this->properties as $prop){
+        foreach($this->properties as $k=>$prop){
             if($prop->class != "DAO"){
                 $columnNamesArr = array();
                 $refProp        = new ReflectionProperty($this->class, $prop->name);
 
                 preg_match("/(@Columnname )(.*)/", $refProp->getDocComment(), $columnNamesArr);
-                preg_match("/(@Columntype )(.*)/", $refProp->getDocComment(), $columnTypesArr);
-                $this->columns[$cont]['name']       = $prop->name;
                 
-                if(isset($columnNamesArr[0]))
-                    $this->columns[$cont]['column'] = $columnNamesArr[2];
-                else
-                    $this->columns[$cont]['column'] = strtolower($prop->name); 
+                foreach ($this->columns as $id => $column) {
+                    if($column['name'] == $prop->name || (isset($columnNamesArr[0]) && $column['name'] == $columnNamesArr[2]))
+                        $this->fieldsMap[$prop->name] = $id;
+                }
                 
-                $this->columns[$cont]['type']       = isset($columnTypesArr[2])?$columnTypesArr[2]:'string';
                 $cont++;
+            }
+            else{
+                unset($this->properties[$k]);
             }
         }
         
@@ -60,12 +63,13 @@ abstract class DAO{
     
     public function insert(){
         $this->startReflection();
+        print_r($this->properties);
         $this->sql  = "INSERT INTO ".$this->table." ";
         $this->sql .= "(";
         $values = array();
         $cont = 0;
-        foreach($this->columns as $prop){
-            $propertyRef = $this->refObj->getProperty($prop['name']);
+        foreach($this->properties as $prop){
+            $propertyRef = $this->refObj->getProperty($prop->name);
             $propertyRef->setAccessible(true);
             $propertyVal = $propertyRef->getValue($this);
             if(!empty($propertyVal)){
@@ -73,9 +77,12 @@ abstract class DAO{
                 if($cont != 1)
                     $this->sql .= ",";
                 
+                $column = $this->columns[$this->fieldsMap[$prop->name]];
+                
+                
                 $values[$cont]['val']      = $propertyVal;
-                $values[$cont]['type']     = $prop['type'];
-                $this->sql .= $prop['column'];
+                $values[$cont]['type']     = $column['type'];
+                $this->sql .= $column['name'];
 
             }
         }
@@ -85,9 +92,9 @@ abstract class DAO{
             $cont++;
             if($cont != 1)
                 $this->sql .= ",";
-            if($value['type']=='string' || $value['type']=='date')
+            if(strstr($value['type'],'varchar') || strstr($value['type'], 'date'))
                 $this->sql .= "'".$value['val']."'";
-            else if($value['type']=='int' || $value['type']=='bool')
+            else if(strstr($value['type'], 'int') || strstr($value['type'], 'bool'))
                 $this->sql .= $value['val'];
             else 
                 die("Unknown data type for value ".$value['val']." !!");
@@ -99,74 +106,180 @@ abstract class DAO{
 
     }
     
-    public function update($condition=null){
+    public function update($condition = null){
         $this->startReflection();
         $this->sql  = "UPDATE ".$this->table." SET ";
-        $values = array();
+
         $cont = 0;
-        foreach($this->columns as $prop){
-            $propertyRef = $this->refObj->getProperty($prop['name']);
+        foreach($this->properties as $prop){
+            $propertyRef = $this->refObj->getProperty($prop->name);
             $propertyRef->setAccessible(true);
             $propertyVal = $propertyRef->getValue($this);
             if(!empty($propertyVal)){
                 $cont++;
                 if($cont != 1)
-                    $this->sql .= ", ";
+                    $this->sql .= ",";
                 
-                $this->sql .= $prop['column']." = ";
-                if($prop['type']=='string' || $prop['type']=='date')
+                $column = $this->columns[$this->fieldsMap[$prop->name]];
+                
+                $this->sql .= $column['name']." = ";
+                if(strstr($column['type'],'varchar') || strstr($column['type'],'date'))
                     $this->sql .= "'".$propertyVal."'";
-                else if($prop['type']=='int' || $prop['type']=='bool')
+                else if(strstr($column['type'],'int') || strstr($column['type'],'bool'))
                     $this->sql .= $propertyVal;
-                else 
+                else
                     die("Unknown data type for value ".$propertyVal." !!");
+
             }
         }
-        if(!is_null($condition))
-            $this->sql .= " WHERE ".$condition." ;";
-        else
-            $this->sql .= " WHERE id=".$this->getId()." ;";
-        
+
+        if(is_null($condition)){
+            $propertyRef = $this->refObj->getProperty($this->pk);
+            $propertyRef->setAccessible(true);
+            $propertyVal = $propertyRef->getValue($this);
+            $condition = $this->pk." = ".$propertyVal;
+        }
+        $this->sql .= " WHERE ".$condition." ;";
+
         return $this->execQuery();
     }
     
-    public function delete(){
+    public function delete($condition = null){
         $this->startReflection();
-        $this->sql = "DELETE FROM ".$this->table." WHERE ";
         
-        $cont = 0;
-        foreach($this->columns as $prop){
-            $propertyRef = $this->refObj->getProperty($prop['name']);
+        if(is_null($condition)){
+            $propertyRef = $this->refObj->getProperty($this->pk);
             $propertyRef->setAccessible(true);
             $propertyVal = $propertyRef->getValue($this);
-            if(!empty($propertyVal)){
-                $cont++;
-                if($cont != 1)
-                    $this->sql .= " AND ";
-                
-                $this->sql .= $prop['column']." = ";
-                if($prop['type']=='string' || $prop['type']=='date')
-                    $this->sql .= "'".$propertyVal."'";
-                else if($prop['type']=='int' || $prop['type']=='bool')
-                    $this->sql .= $propertyVal;
-                else 
-                    die("Unknown data type for value ".$propertyVal." !!");
-            }
+            $condition = $this->pk." = ".$propertyVal;
         }
+        
+        $this->sql = "DELETE FROM ".$this->table." WHERE ".$condition;
         return $this->execQuery();
         
     }
     
-    public function listAll($dir = 'ASC', $order = null){
+    public function listAll($dir = 'ASC', $order = null, $pag = null, $perpag = null){
         $this->startReflection();
         $this->sql = "SELECT * FROM ".$this->table." ";
-        if(!is_null($order))
+        
+        if(!is_null($pag) && !is_null($perpag)){
+            $ini =  $perpag * ($pag-1);
+            if(!is_null($order))
+                $this->sql .= "ORDER BY ".$order." ".$dir." LIMIT ".$ini.",".$perpag;
+            else
+                $this->sql .= "ORDER BY ".$this->pk." ".$dir." LIMIT ".$ini.",".$perpag;
+        }else if(!is_null($order)){
             $this->sql .= "ORDER BY ".$order." ".$dir;
+        }
+        
+            
         $this->sql .= ";";
+  
+        return $this->createArrayResults($this->execQuery());
+    }
+    
+    public function getNumRows(){
+        $this->startReflection();
+        $this->sql = "SELECT count(*) FROM ".$this->table.";";
+        $rs = $this->execQuery();
+        $row = mysql_fetch_row($rs);
+        return $row[0];
+    }
+    
+    private function getTableRows(){
+        $this->sql = "SHOW COLUMNS FROM ".$this->table.";";
+        $result = $this->execQuery();
+        if (!$result) {
+            echo 'Could not run query: ' . mysql_error();
+            exit;
+        }
+        if (mysql_num_rows($result) > 0) {
+            $count = 0;
+            while ($row = mysql_fetch_assoc($result)) {
+                $this->columns[$count] = array( 'name' => $row['Field'],
+                                                'type' => $row['Type']);
+                if($row['Key'] == 'PRI'){
+                    $this->pk = $row['Field'];
+                }
+                $count++;
+            }
+        }
+
+    }
+    
+    public function load(){
+        $this->startReflection();
+        $propertyRef = $this->refObj->getProperty($this->pk);
+        $propertyRef->setAccessible(true);
+        $propertyVal = $propertyRef->getValue($this);
+        $this->sql = "SELECT * FROM ".$this->table." WHERE ".$this->pk." = ".$propertyVal.";";
+        $result = $this->execQuery();
+
+        if (mysql_num_rows($result) > 0) {
+            while ($row = mysql_fetch_assoc($result)) {
+                foreach ($row as $nameC => $valueC) {
+                    foreach($this->columns as $k => $v){
+                        if($nameC==$v['name']){
+                            $map = array_flip($this->fieldsMap);
+                            $f = "set".ucfirst($map[$k]);
+                            $this->$f($valueC);
+                        }
+                    }
+                }
+            }
+        }
         
+    }
+    
+    public function search(){
+        $this->startReflection();
+        $this->sql = "SELECT * FROM ".$this->table." WHERE ";
         
+        $cont = 0;
+        foreach($this->properties as $prop){
+            $propertyRef = $this->refObj->getProperty($prop->name);
+            $propertyRef->setAccessible(true);
+            $propertyVal = $propertyRef->getValue($this);
+            if(!empty($propertyVal)){
+                $cont++;
+                if($cont != 1)
+                    $this->sql .= ",";
+                
+                $column = $this->columns[$this->fieldsMap[$prop->name]];
+                
+                $this->sql .= $column['name']." = ";
+                if(strstr($column['type'],'varchar') || strstr($column['type'],'date'))
+                    $this->sql .= "'".$propertyVal."'";
+                else if(strstr($column['type'],'int') || strstr($column['type'],'bool'))
+                    $this->sql .= $propertyVal;
+                else
+                    die("Unknown data type for value ".$propertyVal." !!");
+
+            }
+        }
+            
+        $this->sql .= ";";
+  
+        return $this->createArrayResults($this->execQuery());
+    }
+    
+    protected function createArrayResults($rs){
+        while ($row = mysql_fetch_assoc($rs)) {
+            $obj = new stdClass();
+            foreach ($row as $nameC => $valueC) {
+                foreach($this->columns as $k => $v){
+                    if($nameC==$v['name']){
+                        $map = array_flip($this->fieldsMap);
+                        $f = $map[$k];
+                        $obj->$f = $valueC;
+                    }
+                }
+            }
+            $arr[] = $obj;
+        }
         
-        return $this->execQuery();
+        return $arr;
     }
     
     public function getSql() {
