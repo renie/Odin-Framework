@@ -28,17 +28,17 @@
             echo "<ul>";
             $count = 0;
 
-            while ($row = mysql_fetch_assoc($result)){
+            foreach ($result as $item) {
                 echo "<li>Registro: ".$count++;
                 echo "<ul>";
                 echo "<li>";
-                echo $row["id"];
+                echo $item->id;
                 echo "</li>";
                 echo "<li>";
-                echo $row["thename"];
+                echo $item->name;
                 echo "</li>";
                 echo "<li>";
-                echo $row["xpto"];
+                echo $item->xpto;
                 echo "</li>";
                 echo "</ul>";
                 echo "</li>";
@@ -46,6 +46,9 @@
             echo "</ul>";
         }
         
+        /**
+        *@TODO What a fucking update test is that? id you doesn't pass one param, BUG
+        */
         public function up(){
             $obj = new Teste();
             $obj->setName(System::$PARAMS['name'])

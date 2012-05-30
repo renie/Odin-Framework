@@ -63,7 +63,7 @@ abstract class DAO{
     
     public function insert(){
         $this->startReflection();
-        print_r($this->properties);
+
         $this->sql  = "INSERT INTO ".$this->table." ";
         $this->sql .= "(";
         $values = array();
@@ -264,6 +264,9 @@ abstract class DAO{
         return $this->createArrayResults($this->execQuery());
     }
     
+    /**
+    * @TODO verify the access way for this attibutes, it's strange.
+    */
     protected function createArrayResults($rs){
         while ($row = mysql_fetch_assoc($rs)) {
             $obj = new stdClass();
