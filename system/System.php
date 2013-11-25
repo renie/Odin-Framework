@@ -47,6 +47,13 @@
          * @var String 
          */
         public static $PARAMS;
+
+        /**
+         * Stores all params
+         * @access public
+         * @var String 
+         */
+        public static $SERVER;
         
         /**
          * Calls methods that boot all variables
@@ -63,6 +70,7 @@
             $this->setController();
             $this->setAction();
             $this->setParams();
+            System::$SERVER = $_SERVER;
         }
         
         /**
@@ -74,7 +82,6 @@
          * @return void
          */
         private function setUrl(){
-            
             $_GET['key'] = (isset($_GET['key'])?$_GET['key']:DEFAULTCONTROLLER."/".DEFAULTACTION);
             $this->_url = $_GET['key'];
             
@@ -143,6 +150,7 @@
                     $parity++;
                 }
             }
+
             if($_POST){
                 foreach( $_POST as $k => $v ){
                     $indexes[] = $k;
@@ -162,6 +170,7 @@
                 System::$PARAMS = array_combine($indexes, $values);
             else
                 System::$PARAMS = array();
+        
         }
              
         /**
@@ -173,25 +182,59 @@
          * @return void
          */
         public function run(){
-            $controller_path = CONTROLLERS.$this->_controller."Controller.php";
+            $controller_path = CONTROLLERS.$this->_controller.CONTROLLERSUFIX.".php";
             
             if(!file_exists($controller_path)){
                 $this->dispatch404();
             }
 
             require_once($controller_path);
-            $controller = $this->_controller."Controller";
+            $controller = $this->_controller.CONTROLLERSUFIX;
             $app = new $controller();
-            
-            if(!method_exists($app, $this->_action))
-                $this->dispatch404();
             
             $action = $this->_action;
 
+            if(defined('RESTFULENABLE') && RESTFULENABLE){
+                if($action == DEFAULTACTION || $action == null){
+                    $found = false;
+                    $controllerMethods = get_class_methods($controller);
+                    foreach ($controllerMethods as $key => $value) {
+                        $refM = new ReflectionMethod($controller, $value);
+                        $methodArr   = array();
+                        preg_match("/(@REQUEST_METHOD )(.*)/", $refM->getDocComment(), $methodArr);
+                        if(isset($methodArr[0]))
+                            if(trim(strtolower($methodArr[2])) == trim(strtolower(SYSTEM::$SERVER['REQUEST_METHOD'])))        
+                                $action = $value;    
+                    }
+                }else{
+                    if(!method_exists($app, $action)){
+                        $this->dispatch404(true);
+                        die();
+                    }
+                    
+                    $refM = new ReflectionMethod($controller, $action);
+                    $methodArr   = array();
+                    preg_match("/(@REQUEST_METHOD )(.*)/", $refM->getDocComment(), $methodArr);
+                    if(isset($methodArr[0]))
+                        if(trim(strtolower($methodArr[2])) != trim(strtolower(SYSTEM::$SERVER['REQUEST_METHOD'])))        
+                            $action = null;
+
+                }
+                if($action == null){
+                    header(':', true, 405);
+                    die();
+                }
+            }
+            $this->_action = $action;
+            if(!method_exists($app, $this->_action)){
+                $this->dispatch404();
+                die();
+            }
+
             if(defined('AUTHENABLE') && AUTHENABLE){
 
-                $refM = new ReflectionMethod($controller, $action);
                 $refC = new ReflectionClass($controller);
+
 
                 $authMNeeded = array();
                 preg_match("/@OdinAuth /", $refM->getDocComment(), $authMNeeded);
@@ -225,11 +268,11 @@
                                 RedirectHelper::goToControllerAction(AUTHCONTROLLERHOME, AUTHACTIONHOME);
                                 exit;
                             }else{
-                                RedirectHelper::goToUrl("odinphp.com/Fury");
+                                echo "FURY OF ODIN!!!!!";
                                 exit;
                             }
                         }else{
-                            RedirectHelper::goToUrl("odinphp.com/Fury");
+                            echo "FURY OF ODIN!!!!!";
                             exit;
                         }
                     }
@@ -253,8 +296,11 @@
          * @since 1.0
          * @return void
          */
-        public function dispatch404(){
-            RedirectHelper::goToController(DEFAULT404ERRORCONTROLLER);        
+        public function dispatch404($throwError){
+            if(!$throwError)
+                RedirectHelper::goToController(DEFAULT404ERRORCONTROLLER);      
+            else
+                header(':', true, 404);  
         }
         
         /**

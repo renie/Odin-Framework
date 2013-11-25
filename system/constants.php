@@ -15,6 +15,7 @@
      */    
     define('SYSTEMNAME', 'Odin framework');
     define('DEFAULTCONTROLLER', 'Odin'); //'index' are not recommended
+    define('CONTROLLERSUFIX', 'Controller');
     define('DEFAULTACTION', 'ini'); //'index' are not recommended
     define('DEFAULT404ERRORCONTROLLER', 'Error404'); //'index' are not recommended
 
@@ -128,6 +129,11 @@
     define('AUTHACTIONHOME', 'restrictedByAnnotation');
     
     
+    /**
+     * Enable Helper for RESTFUL
+     */
+    define('RESTFULENABLE', true);
+
     
     /**
      * App's database server
