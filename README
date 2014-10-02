@@ -22,7 +22,7 @@ Notes:
 
 Notices:
 
-    - For the time being, Odin manager of controllers and Actions id based on
+    - For the time being, Odin manager of controllers and Actions is based on
         friendly url structure (appName/controller/action/par_name1/val_par_name1/par_name2/val_par_name2[...]).
         So, make sure mod_rewrite is enable and directory apache config for 'AllowOverride' is setted as 'all'.
 
